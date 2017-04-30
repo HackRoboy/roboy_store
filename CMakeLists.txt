@@ -10,6 +10,7 @@ project(roboy_store)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  os
   std_msgs
 )
 
