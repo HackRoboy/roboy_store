@@ -22,14 +22,10 @@ def getPaths():
 	    path_src = str
         elif(i==parser_len-2):
             path_store= str
-    print("path_src:"+path_src)
-    print("path_store:"+path_store)
-    print("path_catkin_ws:"+path_catkin_ws)
- #   print("path: "+os.path.dirname(os.path.abspath(__file__)))
-	
-	
     return [path_src, path_store, path_catkin_ws]
-def callback(data):
+
+
+def installcall(data):
     rospy.loginfo(rospy.get_caller_id() + 'Installing %s...', data.data)
     
     path = getPaths()
@@ -37,17 +33,31 @@ def callback(data):
     path_store = path[1]
     path_catkin_ws = path[2]
 
-
     with open(path_store+'app_list.json') as data_file:    
         apps = json.load(data_file)
 
     pkg = data.data
-    cmd = "git clone "+apps[pkg]+" "+path_src+"src/"+pkg
+
+    # Download pkg
+    cmd = "git clone "+apps[pkg]+" "+path_src+pkg
+
+    try:
+        output = subprocess.check_output(['bash','-c', cmd])
+        print "Done"
+    except:
+        print "Already exist!"
+
+    # Catkin_make
+    cmd = "catkin_make -C "+path_catkin_ws
     output = subprocess.check_output(['bash','-c', cmd])
 
-    print "Done"
-
-    cmd = "roslaunch "+pkg+" "+"*.launcher"
+    # Launch pkg
+    try:
+        cmd = "roslaunch "+pkg+" *"
+        output = subprocess.check_output(['bash','-c', cmd])
+        print "Running"
+    except:
+        print "launch file doesn't work!"
 
 def removecall(data):
     rospy.loginfo(rospy.get_caller_id() + 'Removing %s...', data.data)
@@ -61,21 +71,12 @@ def removecall(data):
       	apps = json.load(data_file)
 	
     pkg = data.data
-    #cmd = "rmdir " + path_src + pkg + ' -r';
-
-    #output = subprocess.check_output(['bash','-c', cmd])
     shutil.rmtree(path_src + pkg)
 	
 
 def store():
-
-    # In ROS, nodes are uniquely named. If two nodes with the same
-    # name are launched, the previous one is kicked off. The
-    # anonymous=True flag means that rospy will choose a unique
-    # name for our 'listener' node so that multiple listeners can
-    # run simultaneously.
     rospy.init_node('store', anonymous=True)
-    rospy.Subscriber('telegram_install', String, callback)
+    rospy.Subscriber('telegram_install', String, installcall)
     rospy.Subscriber('telegram_remove', String, removecall)
 
     # spin() simply keeps python from exiting until this node is stopped
