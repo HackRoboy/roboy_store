@@ -6,7 +6,15 @@ import subprocess
 from std_msgs.msg import String
 
 def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + 'I heard %s', data.data)
+    rospy.loginfo(rospy.get_caller_id() + 'Installing %s...', data.data)
+    
+    with open('/home/dennj/catkin_ws/src/roboy_store/app_list.json') as data_file:    
+        apps = json.load(data_file)
+
+    pkg = data.data
+    cmd = "git clone '"+apps[pkg]+"' '/home/dennj/catkin_ws/src/"+pkg+"'"
+    print cmd
+    output = subprocess.check_output(['bash','-c', cmd])
 
 def store():
 
@@ -17,16 +25,6 @@ def store():
     # run simultaneously.
     rospy.init_node('store', anonymous=True)
     rospy.Subscriber('telegram', String, callback)
-
-
-    with open('/home/dennj/catkin_ws/src/roboy_store/app_list.json') as data_file:    
-        data = json.load(data_file)
-
-    pkg = "picture"
-    cmd = "git clone '"+data[pkg]+"' '/home/dennj/catkin_ws/src/"+pkg+"'"
-    print cmd
-    output = subprocess.check_output(['bash','-c', cmd])
-
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
