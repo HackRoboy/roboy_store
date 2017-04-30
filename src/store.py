@@ -58,6 +58,7 @@ def installcall(data):
         print "Running"
     except:
         print "launch file doesn't work!"
+    print "Waiting..."
 
 def removecall(data):
     rospy.loginfo(rospy.get_caller_id() + 'Removing %s...', data.data)
@@ -72,6 +73,8 @@ def removecall(data):
 	
     pkg = data.data
     shutil.rmtree(path_src + pkg)
+    print "Removed!"
+    print "Waiting..."
 	
 
 def store():
