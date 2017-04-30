@@ -1,0 +1,5 @@
+<launch>
+  <node name="rosbridge_websocke" pkg="rosbridge_server" type="talker" />
+  <node name="rosbridge_websocke" pkg="rosbridge_server" type="talker" />
+</launch>
+
