@@ -1,4 +1,5 @@
 {
     "pictures": "https://github.com/Roboy/roboy-ros-control.git",
-    "speach": "https://github.com/Roboy/roboy_ros_trajectory.git"
+    "speach": "https://github.com/Roboy/roboy_ros_trajectory.git",
+    "pictures": "https://Mistu@bitbucket.org/Mistu/pictures.git"
 }

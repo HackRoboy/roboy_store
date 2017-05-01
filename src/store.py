@@ -53,7 +53,7 @@ def installcall(data):
 
     # Launch pkg
     try:
-        cmd = "roslaunch "+pkg+" *"
+        cmd = "roslaunch "+pkg+" "+pkg+".launch"
         output = subprocess.check_output(['bash','-c', cmd])
         print "Running"
     except:
